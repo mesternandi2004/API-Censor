@@ -1,0 +1,6 @@
+@CENZURAZO_CQW1QQ_MESTER_HostAddress = http://localhost:5162
+
+GET {{CENZURAZO_CQW1QQ_MESTER_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
