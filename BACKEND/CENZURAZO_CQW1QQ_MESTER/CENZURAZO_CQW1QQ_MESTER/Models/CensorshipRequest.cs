@@ -2,9 +2,10 @@
 {
     public class CensorshipRequest
     {
-        
-            public string BlacklistText { get; set; } = string.Empty;
-            public string InputText { get; set; } = string.Empty;
-        
+
+        //public string OriginalWord { get; set; } = string.Empty;
+        //public string ReplacedWord { get; set; } = string.Empty;
+        //public int Position { get; set; } // A pozíció a szövegben (pl. index vagy szópozíció)
+
     }
 }

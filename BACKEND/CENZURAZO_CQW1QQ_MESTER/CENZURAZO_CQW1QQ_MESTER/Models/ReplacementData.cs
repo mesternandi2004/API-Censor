@@ -1,8 +1,12 @@
-﻿namespace CENZURAZO_CQW1QQ_MESTER.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace CENZURAZO_CQW1QQ_MESTER.Models
 {
     public class ReplacementData
     {
-        public string OriginalWord { get; set; } = string.Empty;
-        public string ReplacedWord { get; set; } = string.Empty;
+        [Key]
+        public int ID { get; set; }
+        public string Word { get; set; } = string.Empty;
+        public List<string> Alternatives { get; set; } = new();
     }
 }
