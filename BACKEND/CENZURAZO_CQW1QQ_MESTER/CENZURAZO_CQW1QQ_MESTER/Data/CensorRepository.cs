@@ -1,4 +1,5 @@
 ﻿using CENZURAZO_CQW1QQ_MESTER.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace CENZURAZO_CQW1QQ_MESTER.Data
 {
@@ -45,4 +46,3 @@ namespace CENZURAZO_CQW1QQ_MESTER.Data
             db.SaveChanges();
         }
     }
-}
