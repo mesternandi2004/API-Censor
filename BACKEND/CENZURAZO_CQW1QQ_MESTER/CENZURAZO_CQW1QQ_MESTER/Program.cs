@@ -12,26 +12,35 @@ namespace CENZURAZO_CQW1QQ_MESTER
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddControllersWithViews();
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            // IoC
+            builder.Services.AddDbContext<CensorDbContext>();
+            builder.Services.AddTransient<ICensorRepository, CensorRepository>();
+
+            object value = builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            app.UseRouting();
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller}/{action=Index}/{id?}");
+
+            app.MapGet("/", () => "Hello World!");
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-            app.UseAuthorization();
-
-
-            app.MapControllers();
+            app.UseCors(x => x
+                .AllowCredentials()
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .WithOrigins("http://localhost:5500")
+                .SetIsOriginAllowed(origin => true));
 
             app.Run();
         }
