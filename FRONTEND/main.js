@@ -92,5 +92,64 @@ function deleteWord(word) {
         });
     }
     
-   
+    document.getElementById('processTextBtn').addEventListener('click', () => {
+        const inputText = document.getElementById('Textinput').value.trim();
+        if (!inputText) {
+            alert("A szöveg nem lehet üres!");
+            return;
+        }
+    
+        fetch('http://localhost:5000/api/censorship/process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ text: inputText })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Hiba történt a feldolgozás során.");
+            }
+            return response.json();
+        })
+        .then(data => {
+            const outputDiv = document.getElementById('outputText');
+            outputDiv.innerHTML = data.processedText;
+    
+            // Tisztítjuk a HTML tagek eltávolítása érdekében
+            const cleanProcessedText = data.processedText.replace(/<[^>]*>/g, '');
+    
+            // Szavak gyakoriságának számítása az eredeti és a feldolgozott szövegben
+            const originalWords = countWordFrequencies(data.originalText);
+            const processedWords = countWordFrequencies(cleanProcessedText);
+    
+            // Kinyerjük a feketelistás szavakat a backend válaszából (feltételezve, hogy a backend ezt elküldi)
+            const blacklistFromBackend = data.blacklistWords || []; // Ha a backend nem küldi, akkor üres tömb
+    
+            // Létrehozunk egy másolatot a feldolgozott szavak gyakoriságáról, hogy módosíthassuk
+            const modifiedWordCounts = { ...processedWords };
+    
+            // Eltávolítjuk a feketelistás szavakat a módosított szófelhőből
+            blacklistFromBackend.forEach(blacklistedWord => {
+                const lowerCaseBlacklistedWord = blacklistedWord.toLowerCase();
+                if (modifiedWordCounts.hasOwnProperty(lowerCaseBlacklistedWord)) {
+                    delete modifiedWordCounts[lowerCaseBlacklistedWord];
+                }
+            });
+    
+            // Meghatározzuk a globális max gyakoriságot az eredeti ÉS a módosított szövegben
+            const globalMax = getGlobalMaxCount(originalWords, modifiedWordCounts);
+    
+            // Szófelhők renderelése közös max alapján
+            renderSimpleWordCloud("originalWordCloud", originalWords, globalMax);
+            renderSimpleWordCloud("modifiedWordCloud", modifiedWordCounts, globalMax); // A szűrt gyakoriságokat használjuk
+    
+            document.getElementById('outputSection').classList.remove('d-none');
+            document.getElementById('Textinput').value = '';
+        })
+        .catch(err => {
+            alert("Hiba: " + err.message);
+        });
+    });
+    
     window.onload = loadBlacklist;
