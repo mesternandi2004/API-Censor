@@ -72,3 +72,22 @@ function loadBlacklist() {
     .catch(err => {
         alert("Hiba történt a feketelistás adatok betöltésekor: " + err.message);
     });
+}
+
+function deleteWord(word) {
+    if (!confirm(`Biztosan törölni szeretnéd ezt a szót: "${word}"?`)) return;
+        fetch(`http://localhost:5000/api/censorship/blacklist/${encodeURIComponent(word)}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (!response.ok) {
+                alert("Törlés nem sikerült.");
+                return;
+            }
+            alert("Sikeres törlés.");
+            loadBlacklist(); // Frissítjük a listát
+        })
+        .catch(err => {
+            alert("Hiba történt: " + err.message);
+        });
+    }
