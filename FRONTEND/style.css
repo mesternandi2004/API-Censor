@@ -1,0 +1,120 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 20px;
+}
+
+.container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+h1, h4, h5 {
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+hr {
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+.form-label {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.form-control {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.btn-primary, .btn-success, .btn-danger {
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #007bff;
+}
+
+.btn-success {
+    background-color: #28a745;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+.btn-primary:hover, .btn-success:hover, .btn-danger:hover {
+    opacity: 0.8;
+}
+
+.badge {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.25rem;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+#outputSection {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+}
+
+#wordCloud {
+    display: flex;
+    gap: 20px;
+}
+
+#originalWordCloud, #modifiedWordCloud {
+    flex: 1;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#originalWordCloud h5, #modifiedWordCloud h5 {
+    color: #343a40;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+#originalWordCloud div, #modifiedWordCloud div {
+    display: flex;
+    flex-direction: column; /* Szavak egymás alatt */
+    align-items: flex-start; /* Szavak balra igazítása */
+    gap: 5px; /* Kis térköz a szavak között */
+}
+
+#originalWordCloud div div, #modifiedWordCloud div div {
+    padding: 5px 0;
+}
