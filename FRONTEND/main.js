@@ -7,7 +7,7 @@ document.getElementById('processBlacklistBtn').addEventListener('click', () => {
 
     const blacklist = processBlacklistInput(blacklistInput);
 
-    fetch('http://localhost:5000/api/censorship/blacklist', { 
+    fetch('http://localhost:5000/api/censorship/blacklist', { // itt a backend megfelelő portját használd!
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(blacklist)
@@ -72,8 +72,8 @@ function loadBlacklist() {
     .catch(err => {
         alert("Hiba történt a feketelistás adatok betöltésekor: " + err.message);
     });
-}
 
+}
 function deleteWord(word) {
     if (!confirm(`Biztosan törölni szeretnéd ezt a szót: "${word}"?`)) return;
         fetch(`http://localhost:5000/api/censorship/blacklist/${encodeURIComponent(word)}`, {
@@ -91,3 +91,6 @@ function deleteWord(word) {
             alert("Hiba történt: " + err.message);
         });
     }
+    
+   
+    window.onload = loadBlacklist;
