@@ -152,9 +152,8 @@ function deleteWord(word) {
         });
     });
     
-
-       // A módosított szófelhő előállítása (erre most nincs külön szükség, mert a processedWords szűrésre kerül)
-       function getModifiedWords(processedWords, replacementWords) {
+    // A módosított szófelhő előállítása (erre most nincs külön szükség, mert a processedWords szűrésre kerül)
+    function getModifiedWords(processedWords, replacementWords) {
         return { ...processedWords };
     }
     
@@ -199,6 +198,27 @@ function deleteWord(word) {
         });
     
         container.appendChild(wordList);
+    }
+    
+    function countWordFrequencies(text) {
+        const words = text.toLowerCase().replace(/[.,!]/g, '').match(/\b[\p{L}]+\b/gu) || [];
+        const wordCounts = {};
+        for (const word of words) {
+            wordCounts[word] = (wordCounts[word] || 0) + 1;
+        }
+        return wordCounts;
+    }
+    
+    function getGlobalMaxCount(...wordCountsList) {
+        let max = 1;
+        for (const wordCounts of wordCountsList) {
+            for (const count of Object.values(wordCounts)) {
+                if (count > max) {
+                    max = count;
+                }
+            }
+        }
+        return max;
     }
     
     
