@@ -152,4 +152,54 @@ function deleteWord(word) {
         });
     });
     
+
+       // A módosított szófelhő előállítása (erre most nincs külön szükség, mert a processedWords szűrésre kerül)
+       function getModifiedWords(processedWords, replacementWords) {
+        return { ...processedWords };
+    }
+    
+    // Kivonjuk a cserélt szavakat a szövegből (erre a szófelhőhöz nincs szükség)
+    function removeReplacedWords(text, replacementWords) {
+        let result = text;
+        const wordsToRemove = Object.keys(replacementWords);
+    
+        // Minden cserélt szót eltávolítunk a szövegből
+        wordsToRemove.forEach(word => {
+            const regex = new RegExp('\\b' + word + '\\b', 'gi'); // Szóhatárok biztosítása
+            result = result.replace(regex, ''); // A cserélt szót eltávolítjuk
+        });
+    
+        return result;
+    }
+    
+    function renderSimpleWordCloud(containerId, wordCounts, maxCount) {
+        const container = document.getElementById(containerId);
+    
+        if (!container) {
+            console.error(`Nem található a ${containerId} elem.`);
+            return;
+        }
+    
+        container.innerHTML = ''; // Előző szófelhő törlése
+    
+        const sortedWords = Object.entries(wordCounts).sort((a, b) => b[1] - a[1]);
+    
+        const maxFontSize = 60; // Sokkal nagyobb kezdő betűméret
+        const minFontSize = 12; // Kisebb alsó határ a több szintért
+    
+        const wordList = document.createElement('div');
+    
+        sortedWords.forEach(([word, count]) => {
+            const wordElement = document.createElement('div');
+            // A Math.log használata finomabb skálázást eredményezhet nagyobb gyakoriságkülönbségeknél
+            const fontSize = Math.max(minFontSize, (maxFontSize * Math.log1p(count)) / Math.log1p(maxCount));
+            wordElement.style.fontSize = `${fontSize}px`;
+            wordElement.textContent = word;
+            wordList.appendChild(wordElement);
+        });
+    
+        container.appendChild(wordList);
+    }
+    
+    
     window.onload = loadBlacklist;
