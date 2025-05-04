@@ -5,7 +5,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Data
 {
     public class CensorRepository : ICensorRepository
     {
-        CensorDbContext db;
+        private readonly CensorDbContext db;
 
         public CensorRepository(CensorDbContext db)
         {
@@ -20,29 +20,61 @@ namespace CENZURAZO_CQW1QQ_MESTER.Data
 
         public IEnumerable<ReplacementData> Read()
         {
-            return this.db.ReplacementDatas;
+            return this.db.ReplacementDatas
+                .Include(x => x.Alternatives);
         }
 
         public ReplacementData? Read(int id)
         {
-            return this.db.ReplacementDatas.FirstOrDefault(x => x.ID == id);
+            return this.db.ReplacementDatas
+                .Include(x => x.Alternatives)
+                .FirstOrDefault(x => x.ID == id);
         }
 
         public void Update(ReplacementData data)
         {
-            ReplacementData toUpdate = this.Read(data.ID);
+            var toUpdate = this.Read(data.ID);
+
+            if (toUpdate == null) return;
 
             toUpdate.Word = data.Word;
-            toUpdate.Alternatives = data.Alternatives;
 
+            db.AlternativeWords.RemoveRange(toUpdate.Alternatives);
+
+            toUpdate.Alternatives = data.Alternatives;
 
             db.SaveChanges();
         }
+
         public void Delete(int id)
         {
-            ReplacementData toDelete = this.Read(id);
+            var toDelete = this.Read(id);
+
+            if (toDelete == null) return;
+
+            db.AlternativeWords.RemoveRange(toDelete.Alternatives);
+
             this.db.ReplacementDatas.Remove(toDelete);
 
             db.SaveChanges();
         }
+
+        public IEnumerable<ReplacementData> GetAll()
+        {
+            return db.ReplacementDatas.Include(r => r.Alternatives).ToList();
+        }
+
+        public bool DeleteByWord(string word)
+        {
+            var wordEntry = db.ReplacementDatas
+                .Include(r => r.Alternatives)
+                .FirstOrDefault(r => r.Word == word);
+
+            if (wordEntry == null) return false;
+
+            db.ReplacementDatas.Remove(wordEntry);
+            db.SaveChanges();
+            return true;
+        }
     }
+}

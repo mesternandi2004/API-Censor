@@ -5,7 +5,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Data
 {
     public class CensorDbContext : DbContext
     {
-
+        public DbSet<AlternativeWord> AlternativeWords { get; set; }
         public DbSet<ReplacementData> ReplacementDatas { get; set; }
         public CensorDbContext()
         {
@@ -14,7 +14,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=developerdb;Integrated Security=True;MultipleActiveResultSets=true";
+            string connString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=replacementdatadb;Integrated Security=True;MultipleActiveResultSets=true";
             object value = optionsBuilder.UseSqlServer(connString);
             base.OnConfiguring(optionsBuilder);
         }
