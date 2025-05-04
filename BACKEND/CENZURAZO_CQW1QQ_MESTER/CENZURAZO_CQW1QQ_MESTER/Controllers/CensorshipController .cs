@@ -12,13 +12,14 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
     [Route("api/[controller]")]
     public class CensorshipController : ControllerBase
     {
-        ICensorRepository repo;
+        private readonly ICensorRepository repo;
+
 
         public CensorshipController(ICensorRepository repo)
         {
             this.repo = repo;
-        }
 
+        }
         [HttpGet]
         public IEnumerable<ReplacementData> GetReplacementData()
         {
@@ -31,22 +32,52 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
             return this.repo.Read(id);
         }
 
-        [HttpPost]
-        public void GetReplacementData([FromBody] ReplacementData data)
+        [HttpDelete("blacklist/{word}")]
+        public IActionResult DeleteWord(string word)
         {
-            this.repo.Create(data);
+            var success = repo.DeleteByWord(word);
+            if (!success)
+                return NotFound("A megadott szó nem található.");
+
+            return Ok();
         }
 
-        [HttpPut]
-        public void EditReplacement([FromBody] ReplacementData data)
+        [HttpGet("blacklist")]
+        public IActionResult GetBlacklist()
         {
-            this.repo.Update(data);
+            var blacklistData = this.repo.GetAll();  // Visszaadja az összes feketelistás adatot
+            return Ok(blacklistData.Select(item => new {
+                word = item.Word,
+                alternatives = item.Alternatives.Select(a => a.Alternative).ToList()
+            }));
         }
 
-        [HttpDelete("{id}")]
-        public void DeleteReplacementdata(int id)
+        // Ezt meghagyjuk POST-nak, de külön route-on
+        [HttpPost("blacklist")]
+        public IActionResult CreateFromBlacklist([FromBody] Dictionary<string, List<string>> blacklist)
         {
-            this.repo.Delete(id);
+            if (blacklist == null || !blacklist.Any())
+            {
+                return BadRequest("Üres vagy érvénytelen adat érkezett.");
+            }
+
+            foreach (var entry in blacklist)
+            {
+                var word = entry.Key;
+                var alternativesList = entry.Value ?? new List<string>();
+
+                var replacementData = new ReplacementData
+                {
+                    Word = word,
+                    Alternatives = alternativesList
+                        .Select(a => new AlternativeWord { Alternative = a })
+                        .ToList()
+                };
+
+                this.repo.Create(replacementData);
+            }
+
+            return Ok(blacklist.Keys);
         }
     }
 }
