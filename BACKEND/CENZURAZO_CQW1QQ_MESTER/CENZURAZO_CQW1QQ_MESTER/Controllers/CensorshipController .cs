@@ -79,5 +79,64 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
 
             return Ok(blacklist.Keys);
         }
+
+        [HttpPut("blacklist")]
+        public IActionResult EditBlacklist([FromBody] Dictionary<string, List<string>> updates)
+        {
+            if (updates == null || !updates.Any())
+                return BadRequest("Nincs adat a frissítéshez.");
+
+            foreach (var entry in updates)
+            {
+                var word = entry.Key;
+                var alternatives = entry.Value;
+
+                var existing = repo.Read().FirstOrDefault(x => x.Word == word);
+
+                if (existing != null)
+                {
+                    existing.Alternatives = alternatives
+                        .Select(alt => new AlternativeWord { Alternative = alt })
+                        .ToList();
+                    repo.Update(existing);
+                }
+                else
+                {
+                    var newData = new ReplacementData
+                    {
+                        Word = word,
+                        Alternatives = alternatives
+                            .Select(alt => new AlternativeWord { Alternative = alt })
+                            .ToList()
+                    };
+                    repo.Create(newData);
+                }
+            }
+
+            return Ok("Feketelista frissítve.");
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult DeleteReplacementdata(int id)
+        {
+            this.repo.Delete(id);
+            return Ok();
+        }
+
+        [HttpPost("process")]
+        public ActionResult<TextProcessingResponse> ProcessText([FromBody] TextProcessingRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Text))
+            {
+                return BadRequest("A bemeneti szöveg nem lehet üres.");
+            }
+
+            var blacklist = this.repo.Read().ToList();
+
+            var processor = new TextProcessor(blacklist);
+            var response = processor.Process(request.Text);
+
+            return Ok(response);
+        }
     }
 }
