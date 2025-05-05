@@ -23,6 +23,9 @@ namespace CENZURAZO_CQW1QQ_MESTER
             var app = builder.Build();
 
             app.UseRouting();
+
+            // Alapértelmezett útvonal minta beállítása controller/action/id formátumban
+            // Set up default route pattern: controller/action/id
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller}/{action=Index}/{id?}");
@@ -35,6 +38,8 @@ namespace CENZURAZO_CQW1QQ_MESTER
                 app.UseSwaggerUI();
             }
 
+            // CORS (Cross-Origin Resource Sharing) szabályok beállítása
+            // Set up CORS to allow frontend from specific origin
             app.UseCors(x => x
                 .AllowCredentials()
                 .AllowAnyMethod()

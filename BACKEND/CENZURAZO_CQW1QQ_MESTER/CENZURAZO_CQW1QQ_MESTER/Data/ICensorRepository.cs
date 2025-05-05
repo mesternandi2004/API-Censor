@@ -9,7 +9,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Data
         IEnumerable<ReplacementData> Read();
         ReplacementData? Read(int id);
         void Update(ReplacementData data);
-        IEnumerable<ReplacementData> GetAll();  // Ez adja vissza az összes feketelistás adatot
+        IEnumerable<ReplacementData> GetAll();  
         bool DeleteByWord(string word);
     }
 }
