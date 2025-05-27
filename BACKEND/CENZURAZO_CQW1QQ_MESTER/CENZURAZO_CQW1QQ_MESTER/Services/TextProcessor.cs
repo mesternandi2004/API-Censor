@@ -17,8 +17,8 @@ namespace CENZURAZO_CQW1QQ_MESTER.Services
         }
 
 
-        // Fő feldolgozó metódus: cenzúrázza a szöveget és előállítja a választ
-        // Main processing method: censors text and builds response
+       
+         //censors text and builds response
         public TextProcessingResponse Process(string input)
         {
             string processed = input;
@@ -29,21 +29,20 @@ namespace CENZURAZO_CQW1QQ_MESTER.Services
                 if (string.IsNullOrWhiteSpace(rule.Word) || rule.Alternatives == null || rule.Alternatives.Count == 0)
                     continue;
 
-                // Regex minta teljes szavakra (kis/nagybetű független)
-                // Regex pattern for whole words only (case-insensitive)
+                
+                // Regex pattern 
                 string pattern = $@"\b{Regex.Escape(rule.Word)}\b";
                 processed = Regex.Replace(processed, pattern, match =>
                 {
-                    var alt = GetNextAlternative(rule); //Válassz egy alternatívát // Pick a random alternative
-                    UpdateCounts(match.Value, alt);     // Frissítsd a szógyakoriságokat // Update word counts
-                    usedBlacklistWords.Add(rule.Word); // Jegyezd meg, hogy ezt a szót lecseréltük // Mark this word as used
-
-                    return WrapReplacement(match.Value, alt);  // Cseréld le badge formátumban // Replace it with a badge-wrapped
+                    var alt = GetNextAlternative(rule); 
+                    UpdateCounts(match.Value, alt);     
+                    usedBlacklistWords.Add(rule.Word); 
+                    return WrapReplacement(match.Value, alt);
                 }, RegexOptions.IgnoreCase);
             }
 
-            CountWords(input, originalCounts);        // Számolja az eredeti szavakat // Count original words
-            CountWords(processed, processedCounts);  // Számolja a feldolgozott szavakat // Count processed words
+            CountWords(input, originalCounts); // Count original words
+            CountWords(processed, processedCounts);  // Count processed words
 
             return new TextProcessingResponse
             {
@@ -55,7 +54,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Services
             };
         }
 
-        // Lecserélt szó HTML badge-ként formázása (eredeti + alternatíva)
+        
         // Formats the replacement: original word in red badge, new one in green
         private string WrapReplacement(string original, string alt)
         {
@@ -65,24 +64,20 @@ namespace CENZURAZO_CQW1QQ_MESTER.Services
             return $"<span class='badge bg-danger'>{original}</span> <span class='badge bg-success'>{formattedAlt}</span>";
         }
 
-        // Alternatíva nagy kezdőbetűvel, ha az eredeti is nagy
-        // Capitalizes the replacement if the original started with a capital letter
         private string Capitalize(string word)
         {
             if (string.IsNullOrEmpty(word)) return word;
             return char.ToUpper(word[0]) + word.Substring(1).ToLower();
         }
 
-        // Visszaad egy véletlenszerű alternatívát a listából
-        // Returns a random alternative from the list
+        
         private string GetNextAlternative(ReplacementData rule)
         {
             int index = rng.Next(rule.Alternatives.Count);
             return rule.Alternatives.ElementAt(index).Alternative;
         }
 
-        // Szavak számolása egy szövegből, kisbetűsítve
-        // Counts how often each word appears (case-insensitive)
+       
         private void CountWords(string text, Dictionary<string, int> dict)
         {
             var words = Regex.Matches(text.ToLower(), @"\b\w+\b");
@@ -95,7 +90,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Services
             }
         }
 
-        // Frissíti az eredeti és a lecserélt szavak előfordulását
+      
         // Updates frequency counts for both original and replaced words
         private void UpdateCounts(string original, string replacement)
         {

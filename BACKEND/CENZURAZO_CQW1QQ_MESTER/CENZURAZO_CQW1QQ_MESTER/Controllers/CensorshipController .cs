@@ -19,7 +19,6 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
             this.repo = repo;
         }
 
-        // Visszaadja az összes ReplacementData rekordot
         // Returns all ReplacementData records
         [HttpGet]
         public IEnumerable<ReplacementData> GetReplacementData()
@@ -27,7 +26,6 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
             return this.repo.Read();
         }
 
-        // Visszaad egy adott ReplacementData rekordot ID alapján
         // Returns a specific ReplacementData by ID
         [HttpGet("{id}")]
         public ReplacementData? GetReplacementData(int id)
@@ -35,19 +33,17 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
             return this.repo.Read(id);
         }
 
-        // Töröl egy szót a feketelistából (a megadott szó alapján)
         // Deletes a word from the blacklist by the word itself
         [HttpDelete("blacklist/{word}")]
         public IActionResult DeleteWord(string word)
         {
             var success = repo.DeleteByWord(word);
             if (!success)
-                return NotFound("A megadott szó nem található."); // The given word was not found
+                return NotFound("The given word was not found"); 
 
             return Ok();
         }
 
-        // Lekéri az összes feketelistás szót és azok alternatíváit
         // Retrieves all blacklisted words and their alternatives
         [HttpGet("blacklist")]
         public IActionResult GetBlacklist()
@@ -59,8 +55,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
             }));
         }
 
-        // Új feketelistás szavakat vesz fel a rendszerbe a kliens által küldött formátumból
-        // Adds new blacklisted words and their alternatives from a dictionary sent by the client
+        // Adds new blacklisted words and alternatives
         [HttpPost("blacklist")]
         public IActionResult CreateFromBlacklist([FromBody] Dictionary<string, List<string>> blacklist)
         {
@@ -88,7 +83,6 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
             return Ok(blacklist.Keys);
         }
 
-        // Meglévő feketelistás szavakat frissít vagy újként hozzáad, ha nem létezik
         // Updates existing blacklisted words or adds them if they don't exist
         [HttpPut("blacklist")]
         public IActionResult EditBlacklist([FromBody] Dictionary<string, List<string>> updates)
@@ -105,8 +99,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
 
                 if (existing != null)
                 {
-                    // Frissíti a már meglévő szó alternatíváit
-                    // Updates alternatives for an existing word
+                    
                     existing.Alternatives = alternatives
                         .Select(alt => new AlternativeWord { Alternative = alt })
                         .ToList();
@@ -114,8 +107,6 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
                 }
                 else
                 {
-                    // Hozzáadja új szóként
-                    // Adds as a new entry
                     var newData = new ReplacementData
                     {
                         Word = word,
@@ -127,11 +118,10 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
                 }
             }
 
-            return Ok("Feketelista frissítve."); // Blacklist updated
+            return Ok("Feketelista frissítve."); 
         }
 
-        // Töröl egy ReplacementData rekordot azonosító alapján
-        // Deletes a ReplacementData entry by ID
+        
         [HttpDelete("{id}")]
         public IActionResult DeleteReplacementdata(int id)
         {
@@ -139,7 +129,7 @@ namespace CENZURAZO_CQW1QQ_MESTER.Controllers
             return Ok();
         }
 
-        // Szöveg feldolgozása: feketelistás szavak cseréje alternatívákra
+        
         // Processes the text: replaces blacklisted words with alternatives
         [HttpPost("process")]
         public ActionResult<TextProcessingResponse> ProcessText([FromBody] TextProcessingRequest request)
